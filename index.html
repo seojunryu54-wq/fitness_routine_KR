@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SBD 기반 파워빌딩 운동 루틴 대시보드</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+            color: #ffffff;
+        }
+        .exercise-card {
+            background: rgba(10, 14, 39, 0.95);
+            border-left: 4px solid #ffeb3b;
+            box-shadow: 0 0 15px rgba(255, 235, 59, 0.2);
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 50;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85);
+        }
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-content {
+            background: linear-gradient(135deg, #1a1f3a 0%, #0a0e27 100%);
+            padding: 2rem;
+            border-radius: 0.5rem;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+            border: 2px solid #ffeb3b;
+            box-shadow: 0 0 20px rgba(255, 235, 59, 0.3);
+        }
+        .progress-bar-fill {
+            background: linear-gradient(90deg, #ffeb3b, #fdd835);
+            height: 100%;
+            transition: width 0.5s ease;
+            box-shadow: 0 0 10px rgba(255, 235, 59, 0.6);
+        }
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(255, 235, 59, 0.6); }
+            50% { box-shadow: 0 0 0 10px rgba(255, 235, 59, 0); }
+        }
+        @keyframes scroll-credits {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100vh); }
+        }
+        .btn-pulse {
+            animation: pulse-glow 2s infinite;
+        }
+        .review-card {
+            background: rgba(10, 14, 39, 0.9);
+            border: 2px solid #ffeb3b;
+            padding: 1rem;
+            border-radius: 0.375rem;
+            box-shadow: 0 0 10px rgba(255, 235, 59, 0.15);
+        }
+        .review-section {
+            overflow: hidden;
+            height: 300px;
+            position: relative;
+        }
+        .credits-container {
+            animation: scroll-credits 15s linear infinite;
+            width: 100%;
+        }
+        .star-rating {
+            color: #ffeb3b;
+        }
+        .video-link {
+            color: #ffeb3b;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .video-link:hover {
+            color: #fdd835;
+            text-decoration: underline;
+            text-shadow: 0 0 10px rgba(255, 235, 59, 0.6);
+        }
+        .tip-btn {
+            background: rgba(10, 14, 39, 0.8);
+            border: 1px solid #ffeb3b;
+            color: #ffeb3b;
+            cursor: pointer;
+            padding: 0.75rem;
+            border-radius: 0.375rem;
+            transition: all 0.3s ease;
+        }
+        .tip-btn:hover {
+            background: rgba(255, 235, 59, 0.1);
+            box-shadow: 0 0 10px rgba(255, 235, 59, 0.4);
+            transform: translateX(5px);
+        }
+        @media print {
+            body {
+                background: white;
+                color: black;
+            }
+            .modal, .btn-pulse, header {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+<body class="text-slate-100">
+    <div class="min-h-screen">
+        <!-- HEADER -->
+        <header class="bg-gradient-to-r from-black via-gray-900 to-black border-b-2 border-yellow-400 sticky top-0 z-40" style="box-shadow: 0 0 20px rgba(255, 235, 59, 0.3);">
+            <div class="max-w-7xl mx-auto px-4 py-6">
+                <h1 class="text-4xl font-bold text-yellow-400 mb-2" style="text-shadow: 0 0 10px rgba(255, 235, 59, 0.6);">💪 SBD 파워빌딩 운동 루틴 대시보드</h1>
+                <p class="text-gray-300">벤치프레스, 스쿼트, 데드리프트 1RM을 기반으로 맞춤형 운동 루틴 계산</p>
+            </div>
+        </header>
+
+        <div class="max-w-7xl mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- MAIN CONTENT -->
+            <div class="lg:col-span-2 space-y-8">
+                <!-- REVIEWS SECTION -->
+                <section class="bg-gradient-to-br from-gray-900 to-black border-2 border-yellow-400 rounded-lg p-6" style="box-shadow: 0 0 15px rgba(255, 235, 59, 0.2);">
+                    <h2 class="text-2xl font-bold mb-6 text-yellow-400" style="text-shadow: 0 0 10px rgba(255, 235, 59, 0.5);">⭐ 사용자 후기</h2>
+                    <div class="review-section">
+                        <div class="credits-container space-y-4">
+                            <div class="review-card">
+                                <div class="flex items-center mb-2">
+                                    <span class="font-bold text-yellow-400 mr-2">김**</span>
+                                    <span class="star-rating">★★★★★</span>
+                                </div>
+                                <p class="text-sm text-gray-300">3개월 만에 스쿼트가 50kg 증가했어요</p>
+                            </div>
+                            <div class="review-card">
+                                <div class="flex items-center mb-2">
+                                    <span class="font-bold text-yellow-400 mr-2">박**</span>
+                                    <span class="star-rating">★★★★★</span>
+                                </div>
+                                <p class="text-sm text-gray-300">운동 프로그램이 체계적이고 따라하기 쉬워요.</p>
+                            </div>
+                            <div class="review-card">
+                                <div class="flex items-center mb-2">
+                                    <span class="font-bold text-yellow-400 mr-2">이**</span>
+                                    <span class="star-rating">★★★★★</span>
+                                </div>
+                                <p class="text-sm text-gray-300">영상 링크와 함께 간단한 설명이 정말 좋아요 간단명료해서 이해하기 쉬웠어요</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- USER PROFILE & CALCULATOR INPUTS -->
+                <section class="bg-gradient-to-br from-gray-900 to-black border-2 border-yellow-400 rounded-lg p-6" style="box-shadow: 0 0 15px rgba(255, 235, 59, 0.2);">
+                    <h2 class="text-2xl font-bold mb-6 text-yellow-400" style="text-shadow: 0 0 10px rgba(255, 235, 59, 0.5);">📊 프로필 & 1RM 입력</h2>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                        <div>
+                            <label class="block text-sm font-semibold mb-2">나이</label>
+                            <input type="number" id="age" placeholder="25" class="w-full bg-gray-800 border border-yellow-400 rounded px-3 py-2 text-white" style="box-shadow: 0 0 5px rgba(255, 235, 59, 0.2);">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold mb-2">성별</label>
+                            <select id="gender" class="w-full bg-gray-800 border border-yellow-400 rounded px-3 py-2 text-white" style="box-shadow: 0 0 5px rgba(255, 235, 59, 0.2);">
+                                <option value="male">남성</option>
+                                <option value="female">여성</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold mb-2">신장 (cm)</label>
+                            <input type="number" id="height" placeholder="180" class="w-full bg-gray-800 border border-yellow-400 rounded px-3 py-2 text-white" style="box-shadow: 0 0 5px rgba(255, 235, 59, 0.2);">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold mb-2">체중 (kg)</label>
+                            <input type="number" id="weight" placeholder="85" class="w-full bg-gray-800 border border-yellow-400 rounded px-3 py-2 text-white" style="box-shadow: 0 0 5px rgba(255, 235, 59, 0.2);">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold mb-2">운동 경력</label>
+                            <select id="experience" class="w-full bg-gray-800 border border-yellow-400 rounded px-3 py-2 text-white" style="box-shadow: 0 0 5px rgba(255, 235, 59, 0.2);">
+                                <option value="beginner">6개월 이하</option>
+                                <option value="intermediate">6개월 ~ 3년</option>
+                                <option value="advanced">3년 이상</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold mb-2">훈련 목표</label>
+                            <select id="goal" class="w-full bg-gray-800 border border-yellow-400 rounded px-3 py-2 text-white" style="box-shadow: 0 0 5px rgba(255, 235, 59, 0.2);">
+                                <option value="hypertrophy">근비대 (근육 성장)</option>
+                                <option value="strength">근력 (1RM 증가)</option>
+                                <option value="fatloss">체지방 감량</option>
+                            </select>
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-semibold mb-2">이번 달 목표</label>
+                            <input type="text" id="monthlyGoal" placeholder="예: 스쿼트 200kg 달성" class="w-full bg-gray-800 border border-yellow-400 rounded px-3 py-2 text-white" style="box-shadow: 0 0 5px rgba(255, 235, 59, 0.2);">
+                        </div>
+                    </div>
+
+                    <div class="border-t border-yellow-400 pt-6 mt-6">
+                        <h3 class="text-xl font-bold mb-4 text-yellow-400" style="text-shadow: 0 0 8px rgba(255, 235, 59, 0.5);">🏋️ 주요 운동 1RM (kg)</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                            <div>
+                                <label class="block text-sm font-semibold mb-2">벤치프레스 1RM (kg)</label>
+                                <input type="number" id="bench1rm" placeholder="100" class="w-full bg-gray-800 border border-yellow-400 rounded px-3 py-2 text-white" style="box-shadow: 0 0 5px rgba(255, 235, 59, 0.2);">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold mb-2">스쿼트 1RM (kg)</label>
+                                <input type="number" id="squat1rm" placeholder="150" class="w-full bg-gray-800 border border-yellow-400 rounded px-3 py-2 text-white" style="box-shadow: 0 0 5px rgba(255, 235, 59, 0.2);">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold mb-2">데드리프트 1RM (kg)</label>
+                                <input type="number" id="deadlift1rm" placeholder="180" class="w-full bg-gray-800 border border-yellow-400 rounded px-3 py-2 text-white" style="box-shadow: 0 0 5px rgba(255, 235, 59, 0.2);">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold mb-2">목표 SBD 토탈 (kg)</label>
+                            <input type="number" id="targetTotal" placeholder="500" class="w-full bg-gray-800 border border-yellow-400 rounded px-3 py-2 text-white mb-4" style="box-shadow: 0 0 5px rgba(255, 235, 59, 0.2);">
+                        </div>
+
+                        <!-- PROGRESS BAR -->
+                        <div class="mb-6">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="text-sm font-semibold text-yellow-400">3대 목표까지</span>
+                                <span class="text-sm text-yellow-400" id="progressText">0 / 0 kg (0%)</span>
+                            </div>
+                            <div class="w-full bg-gray-800 rounded-full h-4 overflow-hidden border border-yellow-400">
+                                <div class="progress-bar-fill" id="progressBar" style="width: 0%"></div>
+                            </div>
+                        </div>
+
+                        <button onclick="calculateRoutine()" class="w-full bg-gradient-to-r from-yellow-500 to-yellow-400 hover:from-yellow-400 hover:to-yellow-300 text-black font-bold py-3 px-6 rounded-lg btn-pulse transition" style="box-shadow: 0 0 15px rgba(255, 235, 59, 0.5);">
+                            🚀 루틴 생성하기
+                        </button>
+                    </div>
+                </section>
+
+                <!-- EXERCISE RESULTS -->
+                <section id="resultsSection" class="hidden space-y-6">
+                    <div class="flex justify-between items-center flex-wrap gap-4">
+                        <h2 class="text-2xl font-bold text-yellow-400" style="text-shadow: 0 0 10px rgba(255, 235, 59, 0.5);">📋 맞춤형 운동 계획</h2>
+                        <div class="flex gap-2">
+                            <button onclick="saveAsImage()" class="bg-gradient-to-r from-blue-600 to-blue-400 hover:from-blue-500 hover:to-blue-300 text-white font-semibold py-2 px-4 rounded flex items-center gap-2 text-sm" style="box-shadow: 0 0 10px rgba(100, 200, 255, 0.4);">
+                                📱 이미지로 저장
+                            </button>
+                            <button onclick="saveAsPDF()" class="bg-gradient-to-r from-yellow-600 to-yellow-400 hover:from-yellow-500 hover:to-yellow-300 text-black font-semibold py-2 px-4 rounded flex items-center gap-2 text-sm" style="box-shadow: 0 0 10px rgba(255, 235, 59, 0.4);">
+                                💾 PDF로 저장
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- CHEST -->
+                    <div class="bg-gradient-to-br from-gray-900 to-black border-2 border-yellow-400 rounded-lg p-6" style="box-shadow: 0 0 15px rgba(255, 235, 59, 0.2);">
+                        <h3 class="text-xl font-bold text-yellow-400 mb-4" style="text-shadow: 0 0 8px rgba(255, 235, 59, 0.5);">🔥 가슴 (벤치프레스 기반)</h3>
+                        <div id="chestExercises" class="space-y-3"></div>
+                    </div>
+
+                    <!-- SHOULDERS -->
+                    <div class="bg-gradient-to-br from-gray-900 to-black border-2 border-yellow-400 rounded-lg p-6" style="box-shadow: 0 0 15px rgba(255, 235, 59, 0.2);">
+                        <h3 class="text-xl font-bold text-yellow-400 mb-4" style="text-shadow: 0 0 8px rgba(255, 235, 59, 0.5);">🔥 어깨 (벤치프레스 기반)</h3>
+                        <div id="shoulderExercises" class="space-y-3"></div>
+                    </div>
+
+                    <!-- LEGS -->
+                    <div class="bg-gradient-to-br from-gray-900 to-black border-2 border-yellow-400 rounded-lg p-6" style="box-shadow: 0 0 15px rgba(255, 235, 59, 0.2);">
+                        <h3 class="text-xl font-bold text-yellow-400 mb-4" style="text-shadow: 0 0 8px rgba(255, 235, 59, 0.5);">🔥 하체 (스쿼트 기반)</h3>
+                        <div id="legExercises" class="space-y-3"></div>
+                    </div>
+
+                    <!-- BACK -->
+                    <div class="bg-gradient-to-br from-gray-900 to-black border-2 border-yellow-400 rounded-lg p-6" style="box-shadow: 0 0 15px rgba(255, 235, 59, 0.2);">
+                        <h3 class="text-xl font-bold text-yellow-400 mb-4" style="text-shadow: 0 0 8px rgba(255, 235, 59, 0.5);">🔥 등 (데드리프트 기반)</h3>
+                        <div id="backExercises" class="space-y-3"></div>
+                    </div>
+                </section>
+
+                <!-- WEEKLY SCHEDULE -->
+                <section id="scheduleSection" class="hidden">
+                    <h2 class="text-2xl font-bold text-red-400 mb-4">📅 6일 분할 운동 계획</h2>
+                    <div class="overflow-x-auto bg-slate-800 border border-slate-700 rounded-lg">
+                        <table class="w-full text-sm">
+                            <thead>
+                                <tr class="border-b border-slate-700 bg-slate-900">
+                                    <th class="px-4 py-3 text-left font-bold text-red-400">요일</th>
+                                    <th class="px-4 py-3 text-left font-bold text-red-400">집중 부위</th>
+                                    <th class="px-4 py-3 text-left font-bold text-red-400">주요 운동</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="border-b border-slate-700 hover:bg-slate-700 transition">
+                                    <td class="px-4 py-3 font-semibold text-orange-400">월요일</td>
+                                    <td class="px-4 py-3">푸시 1일</td>
+                                    <td class="px-4 py-3">바벨 벤치프레스, 오버헤드 프레스, 인클라인 덤벨 프레스, 덤벨 사이드 래이즈</td>
+                                </tr>
+                                <tr class="border-b border-slate-700 hover:bg-slate-700 transition">
+                                    <td class="px-4 py-3 font-semibold text-orange-400">화요일</td>
+                                    <td class="px-4 py-3">풀 1일</td>
+                                    <td class="px-4 py-3">컨벤셔널 데드리프트, 바벨 로우, 랫 풀다운, 리버스 펙 덱 플라이</td>
+                                </tr>
+                                <tr class="border-b border-slate-700 hover:bg-slate-700 transition">
+                                    <td class="px-4 py-3 font-semibold text-orange-400">수요일</td>
+                                    <td class="px-4 py-3">다리 1일</td>
+                                    <td class="px-4 py-3">바벨 스쿼트, 레그 프레스, 불가리안 스플릿 스쿼트, 루마니안 데드리프트</td>
+                                </tr>
+                                <tr class="border-b border-slate-700 hover:bg-slate-700 transition">
+                                    <td class="px-4 py-3 font-semibold text-orange-400">목요일</td>
+                                    <td class="px-4 py-3">푸시 2일</td>
+                                    <td class="px-4 py-3">케이블 체스트 플라이, 덤벨 숄더 프레스, 체스트 딥스, 리버스 펙 덱</td>
+                                </tr>
+                                <tr class="border-b border-slate-700 hover:bg-slate-700 transition">
+                                    <td class="px-4 py-3 font-semibold text-orange-400">금요일</td>
+                                    <td class="px-4 py-3">풀 2일</td>
+                                    <td class="px-4 py-3">바벨 로우, 시티드 케이블 로우, 랫 풀다운, 어시스트 친업</td>
+                                </tr>
+                                <tr class="border-b border-slate-700 hover:bg-slate-700 transition">
+                                    <td class="px-4 py-3 font-semibold text-orange-400">토요일</td>
+                                    <td class="px-4 py-3">다리 2일</td>
+                                    <td class="px-4 py-3">레그 프레스, 불가리안 스플릿 스쿼트, 레그 컬, 웨이티드 카프 레이즈</td>
+                                </tr>
+                                <tr class="hover:bg-slate-700 transition">
+                                    <td class="px-4 py-3 font-semibold text-orange-400">일요일</td>
+                                    <td class="px-4 py-3">휴식 & 회복</td>
+                                    <td class="px-4 py-3">가벼운 스트레칭, 유동성 운동, 근력 회복</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- TODAY'S WORKOUT TRACKER -->
+                <section id="trackerSection" class="hidden bg-gradient-to-br from-gray-900 to-black border-2 border-yellow-400 rounded-lg p-6" style="box-shadow: 0 0 15px rgba(255, 235, 59, 0.2);">
+                    <h2 class="text-2xl font-bold text-yellow-400 mb-4" style="text-shadow: 0 0 10px rgba(255, 235, 59, 0.5);">✅ 오늘의 운동 체크리스트</h2>
+                    <div id="workoutChecklist" class="space-y-2"></div>
+                    <button onclick="clearChecklist()" class="mt-4 bg-yellow-600 hover:bg-yellow-500 text-black font-semibold py-2 px-4 rounded" style="box-shadow: 0 0 8px rgba(255, 235, 59, 0.3);">
+                        체크리스트 초기화
+                    </button>
+                </section>
+            </div>
+
+            <!-- RIGHT SIDEBAR -->
+            <div class="lg:col-span-1">
+                <div class="sticky top-24 space-y-6">
+                    <div class="bg-gradient-to-br from-gray-900 to-black border-2 border-yellow-400 rounded-lg p-6" style="box-shadow: 0 0 15px rgba(255, 235, 59, 0.2);">
+                        <h3 class="text-lg font-bold text-yellow-400 mb-4" style="text-shadow: 0 0 8px rgba(255, 235, 59, 0.5);">💡 훈련 팁</h3>
+                        <div class="space-y-2 text-sm">
+                            <button onclick="openTipModal('form')" class="tip-btn w-full text-left">📋 정확한 폼으로 운동하기</button>
+                            <button onclick="openTipModal('sleep')" class="tip-btn w-full text-left">😴 충분한 수면 (7-9시간)</button>
+                            <button onclick="openTipModal('protein')" class="tip-btn w-full text-left">🥚 단백질 섭취 하기</button>
+                            <button onclick="openTipModal('consistency')" class="tip-btn w-full text-left">🔄 꾸준한 훈련</button>
+                            <button onclick="openTipModal('tracking')" class="tip-btn w-full text-left">📝 운동 기록하기</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- FOOTER -->
+        <footer class="bg-black border-t-2 border-yellow-400 mt-12" style="box-shadow: 0 0 20px rgba(255, 235, 59, 0.2);">
+            <div class="max-w-7xl mx-auto px-4 py-8">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+                    <div>
+                        <h3 class="text-lg font-bold text-yellow-400 mb-4" style="text-shadow: 0 0 8px rgba(255, 235, 59, 0.5);">이 도구에 대해</h3>
+                        <p class="text-gray-400 text-sm">스포츠 과학 기반의 파워빌딩 운동 프로그램 대시보드입니다.</p>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-bold text-yellow-400 mb-4" style="text-shadow: 0 0 8px rgba(255, 235, 59, 0.5);">리소스</h3>
+                        <ul class="space-y-2 text-sm">
+                            <li><a href="#" onclick="openModal('disclaimerModal')" class="text-gray-400 hover:text-yellow-400 transition">면책 조항</a></li>
+                            <li><a href="#" onclick="openModal('termsModal')" class="text-gray-400 hover:text-yellow-400 transition">이용 약관</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-bold text-yellow-400 mb-4" style="text-shadow: 0 0 8px rgba(255, 235, 59, 0.5);">안내</h3>
+                        <p class="text-gray-400 text-sm">새로운 운동 프로그램 시작 전 전문가와 상담하세요.</p>
+                    </div>
+                </div>
+                <div class="border-t border-yellow-400 pt-4 text-center text-gray-500 text-sm">
+                    <p>&copy; 2024 SBD 파워빌딩 대시보드. 모든 권리 보유.</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- MODALS -->
+    <!-- Medical Disclaimer Modal -->
+    <div id="disclaimerModal" class="modal" onclick="closeModalOnBackdrop(event, 'disclaimerModal')">
+        <div class="modal-content">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-2xl font-bold text-yellow-400">면책 조항</h2>
+                <button onclick="closeModal('disclaimerModal')" class="text-3xl text-gray-400 hover:text-yellow-400">&times;</button>
+            </div>
+            <div class="text-gray-300 space-y-4">
+                <p class="font-bold text-yellow-400">중요 안전 정보</p>
+                <p>이 대시보드는 교육용이며 전문 의료 조언을 대체할 수 없습니다. 새로운 운동 프로그램을 시작하기 전에 의료 전문가와 상담하세요.</p>
+                <p>강도 높은 운동에는 근육 손상, 관절 손상 등의 위험이 있습니다.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Terms of Service Modal -->
+    <div id="termsModal" class="modal" onclick="closeModalOnBackdrop(event, 'termsModal')">
+        <div class="modal-content">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-2xl font-bold text-yellow-400">이용 약관</h2>
+                <button onclick="closeModal('termsModal')" class="text-3xl text-gray-400 hover:text-yellow-400">&times;</button>
+            </div>
+            <div class="text-gray-300 space-y-4">
+                <p>본 대시보드는 "있는 그대로" 제공됩니다. 사용으로 인한 손상에 대해 책임을 지지 않습니다.</p>
+                <p>이 프로그램의 사용은 전적으로 개인의 책임입니다.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // YouTube 링크 데이터베이스 (실제 인기 운동 영상)
+        const youtubeLinks = {
+            'Barbell Bench Press': 'https://www.youtube.com/watch?v=ejI1Nlsul9k',
+            'Incline Dumbbell Press': 'https://www.youtube.com/watch?v=jMQA3XtJSgo',
+            'Cable Chest Fly': 'https://www.youtube.com/watch?v=BW6MnS4ijIw',
+            'Chest Dips': 'https://www.youtube.com/watch?v=plBHJswBlv4',
+            'Overhead Press (OHP)': 'https://www.youtube.com/shorts/zoN5EH50Dro',
+            'Dumbbell Shoulder Press': 'https://www.youtube.com/shorts/k6tzKisR3NY',
+            'Dumbbell Lateral Raise': 'https://www.youtube.com/shorts/Kl3LEzQ5Zqs',
+            'Reverse Pec Deck Fly': 'https://www.youtube.com/shorts/7tgx6QHB0-A',
+            'Barbell Squat': 'https://www.youtube.com/watch?v=-bJIpOq-LWk',
+            'Leg Press': 'https://www.youtube.com/shorts/EotSw18oR9w',
+            'Bulgarian Split Squat': 'https://www.youtube.com/shorts/or1frhkjBDc',
+            'Romanian Deadlift': 'https://www.youtube.com/shorts/hu3jRvTc_po',
+            'Conventional Deadlift': 'https://www.youtube.com/shorts/xNwpvDuZJ3k',
+            'Barbell Row': 'https://www.youtube.com/shorts/phVtqawIgbk',
+            'Lat Pulldown': 'https://www.youtube.com/shorts/bNmvKpJSWKM',
+            'Seated Cable Row': 'https://www.youtube.com/shorts/qD1WZ5pSuvk'
+        };
+
+        // 한국어 운동 이름 매핑
+        const exerciseNameKR = {
+            'Barbell Bench Press': '바벨 벤치프레스',
+            'Incline Dumbbell Press': '인클라인 덤벨 프레스',
+            'Cable Chest Fly': '케이블 체스트 플라이',
+            'Chest Dips': '체스트 딥스',
+            'Overhead Press (OHP)': '오버헤드 프레스',
+            'Dumbbell Shoulder Press': '덤벨 숄더 프레스',
+            'Dumbbell Lateral Raise': '덤벨 사이드 래이즈',
+            'Reverse Pec Deck Fly': '리버스 펙 덱 플라이',
+            'Barbell Squat': '바벨 스쿼트',
+            'Leg Press': '레그 프레스',
+            'Bulgarian Split Squat': '불가리안 스플릿 스쿼트',
+            'Romanian Deadlift': '루마니안 데드리프트',
+            'Conventional Deadlift': '컨벤셔널 데드리프트',
+            'Barbell Row': '바벨 로우',
+            'Lat Pulldown': '랫 풀다운',
+            'Seated Cable Row': '시티드 케이블 로우'
+        };
+
+        // Modal Functions
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        function closeModalOnBackdrop(event, modalId) {
+            if (event.target.id === modalId) {
+                closeModal(modalId);
+            }
+        }
+
+        // Workout Data
+        let workoutData = {
+            chest: [
+                { name: 'Barbell Bench Press', percent: 1.0 },
+                { name: 'Incline Dumbbell Press', percent: 0.40 },
+                { name: 'Cable Chest Fly', percent: 0.20 },
+                { name: 'Chest Dips', percent: 0.5 }
+            ],
+            shoulder: [
+                { name: 'Overhead Press (OHP)', percent: 0.62 },
+                { name: 'Dumbbell Shoulder Press', percent: 0.25 },
+                { name: 'Dumbbell Lateral Raise', percent: 0.10 },
+                { name: 'Reverse Pec Deck Fly', percent: 0.12 }
+            ],
+            legs: [
+                { name: 'Barbell Squat', percent: 1.0 },
+                { name: 'Leg Press', percent: 1.75 },
+                { name: 'Bulgarian Split Squat', percent: 0.20 },
+                { name: 'Romanian Deadlift', percent: 0.75 }
+            ],
+            back: [
+                { name: 'Conventional Deadlift', percent: 1.0 },
+                { name: 'Barbell Row', percent: 0.55 },
+                { name: 'Lat Pulldown', percent: 0.50 },
+                { name: 'Seated Cable Row', percent: 0.45 }
+            ]
+        };
+
+        function playSuccessSound() {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.value = 800;
+            oscillator.type = 'sine';
+            
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.3);
+        }
+
+        function calculateRoutine() {
+            const bench = parseFloat(document.getElementById('bench1rm').value);
+            const squat = parseFloat(document.getElementById('squat1rm').value);
+            const deadlift = parseFloat(document.getElementById('deadlift1rm').value);
+            const goal = document.getElementById('goal').value;
+            const targetTotal = parseFloat(document.getElementById('targetTotal').value);
+
+            if (!bench || !squat || !deadlift) {
+                alert('모든 1RM 값을 입력해주세요');
+                return;
+            }
+
+            playSuccessSound();
+
+            const currentTotal = bench + squat + deadlift;
+            const progress = Math.min((currentTotal / targetTotal) * 100, 100);
+            document.getElementById('progressBar').style.width = progress + '%';
+            document.getElementById('progressText').innerText = `${Math.round(currentTotal)} / ${targetTotal} kg (${Math.round(progress)}%)`;
+
+            let setsReps = '';
+            let workingPercent = '';
+            let workingPercentDecimal = 0;
+            if (goal === 'hypertrophy') {
+                setsReps = '3-4 x 8-12 반복';
+                workingPercent = '70-75%';
+                workingPercentDecimal = 0.725;
+            } else if (goal === 'strength') {
+                setsReps = '4-5 x 3-5 반복';
+                workingPercent = '85-90%';
+                workingPercentDecimal = 0.875;
+            } else {
+                setsReps = '3 x 8-10 반복';
+                workingPercent = '70-80%';
+                workingPercentDecimal = 0.75;
+            }
+
+            displayExercises('chestExercises', workoutData.chest, bench, setsReps, workingPercent, workingPercentDecimal);
+            displayExercises('shoulderExercises', workoutData.shoulder, bench, setsReps, workingPercent, workingPercentDecimal);
+            displayExercises('legExercises', workoutData.legs, squat, setsReps, workingPercent, workingPercentDecimal);
+            displayExercises('backExercises', workoutData.back, deadlift, setsReps, workingPercent, workingPercentDecimal);
+
+            document.getElementById('resultsSection').classList.remove('hidden');
+            document.getElementById('scheduleSection').classList.remove('hidden');
+            document.getElementById('trackerSection').classList.remove('hidden');
+
+            initializeTracking();
+        }
+
+        function displayExercises(elementId, exercises, baseWeight, setsReps, workingPercent, workingPercentDecimal) {
+            const container = document.getElementById(elementId);
+            container.innerHTML = '';
+
+            exercises.forEach(ex => {
+                const weight = Math.round(baseWeight * ex.percent * workingPercentDecimal / 2.5) * 2.5;
+                const isDumbbell = ex.name.includes('Dumbbell') || ex.name.includes('DB') || ex.name.includes('Lateral Raise');
+                const weightLabel = isDumbbell ? `${weight} kg (한쪽)` : `${weight} kg`;
+                
+                const parts = setsReps.split(' x ');
+                const sets = parts[0];
+                const reps = parts[1];
+                
+                const videoLink = youtubeLinks[ex.name] || '#';
+                const krName = exerciseNameKR[ex.name] || ex.name;
+                
+                const card = document.createElement('div');
+                card.className = 'exercise-card p-4 rounded';
+                card.innerHTML = `
+                    <div class="flex justify-between items-start">
+                        <div class="flex-1">
+                            <h4 class="font-bold text-yellow-400 mb-1" style="text-shadow: 0 0 5px rgba(255, 235, 59, 0.4);">${krName}</h4>
+                            <p class="text-sm text-gray-300 mb-2">${weightLabel}</p>
+                            <p class="text-xs text-gray-400 mb-2"><span class="font-semibold text-yellow-400">세트:</span> ${sets} | <span class="font-semibold text-yellow-400">반복:</span> ${reps}</p>
+                            <p class="text-xs text-gray-500 mb-2">${workingPercent} of 1RM</p>
+                            <a href="${videoLink}" target="_blank" class="video-link text-xs flex items-center gap-1">
+                                ▶️ 운동 영상 보기
+                            </a>
+                        </div>
+                        <input type="checkbox" class="w-5 h-5 text-yellow-400 cursor-pointer accent-yellow-400" onchange="saveChecklist()">
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function initializeTracking() {
+            const today = new Date().toDateString();
+            const savedDate = localStorage.getItem('workoutDate');
+            
+            if (savedDate !== today) {
+                localStorage.setItem('workoutDate', today);
+                localStorage.removeItem('workoutChecklist');
+            }
+
+            const saved = localStorage.getItem('workoutChecklist');
+            if (saved) {
+                const checkedIds = JSON.parse(saved);
+                const checkboxes = document.querySelectorAll('.exercise-card input[type="checkbox"]');
+                checkboxes.forEach((cb, index) => {
+                    if (checkedIds.includes(index)) {
+                        cb.checked = true;
+                    }
+                });
+            }
+        }
+
+        function saveChecklist() {
+            const checkboxes = document.querySelectorAll('.exercise-card input[type="checkbox"]');
+            const checkedIds = [];
+            checkboxes.forEach((cb, index) => {
+                if (cb.checked) {
+                    checkedIds.push(index);
+                }
+            });
+            localStorage.setItem('workoutChecklist', JSON.stringify(checkedIds));
+        }
+
+        function clearChecklist() {
+            document.querySelectorAll('.exercise-card input[type="checkbox"]').forEach(cb => {
+                cb.checked = false;
+            });
+            localStorage.removeItem('workoutChecklist');
+        }
+
+        // Save as PDF - 개선된 버전
+        function saveAsPDF() {
+            try {
+                const element = document.getElementById('resultsSection');
+                if (!element) {
+                    alert('저장할 운동 계획이 없습니다. 먼저 루틴을 생성해주세요.');
+                    return;
+                }
+                
+                const opt = {
+                    margin: 10,
+                    filename: '운동루틴.pdf',
+                    image: { type: 'jpeg', quality: 0.98 },
+                    html2canvas: { scale: 2, useCORS: true },
+                    jsPDF: { orientation: 'portrait', unit: 'mm', format: 'a4' }
+                };
+                
+                if (typeof html2pdf !== 'undefined') {
+                    html2pdf().set(opt).from(element).save();
+                } else {
+                    alert('PDF 라이브러리를 로드 중입니다. 잠시 후 다시 시도해주세요.');
+                    // 대체: 인쇄 기능으로 PDF 저장 유도
+                    window.print();
+                }
+            } catch (error) {
+                console.error('PDF 저장 오류:', error);
+                alert('PDF 저장 중 오류가 발생했습니다. 인쇄로 저장해주세요. (Ctrl+P)');
+            }
+        }
+
+        // Save as Image
+        function saveAsImage() {
+            const element = document.getElementById('resultsSection');
+            
+            if (typeof html2canvas === 'undefined') {
+                alert('이미지 저장 라이브러리를 로드하는 중입니다. 잠시 후 다시 시도해주세요.');
+                return;
+            }
+
+            html2canvas(element, {
+                scale: 2,
+                useCORS: true,
+                logging: false,
+                backgroundColor: '#0a0e27',
+                windowWidth: 900,
+                windowHeight: element.scrollHeight
+            }).then(canvas => {
+                const link = document.createElement('a');
+                link.href = canvas.toDataURL('image/png');
+                link.download = '운동루틴.png';
+                link.click();
+            }).catch(error => {
+                console.error('이미지 저장 오류:', error);
+                alert('이미지 저장 중 오류가 발생했습니다.');
+            });
+        }
+
+        // 팁 모달 함수
+        function openTipModal(tipType) {
+            const tipData = {
+                form: {
+                    title: '📋 정확한 폼으로 운동하기',
+                    content: '운동의 정확한 자세(폼)은 부상 예방과 최대의 근육 활성화를 위해 매우 중요합니다. 무거운 무게보다는 정확한 폼으로 운동하는 것이 더 효과적입니다. 각 운동의 영상을 참고하여 천천히 폼을 익혀나가세요. 전문 트레이너의 도움을 받으면 더욱 빠르게 올바른 폼을 배울 수 있습니다.'
+                },
+                sleep: {
+                    title: '😴 충분한 수면 (7-9시간)',
+                    content: '근육은 운동 중에 손상되고 휴식 중에 성장합니다. 충분한 수면은 성장호르몬과 테스토스테론 분비를 촉진하여 근육 성장을 돕습니다. 하루 7-9시간의 규칙적인 수면은 근력 향상과 피로 회복에 매우 중요합니다. 일정한 시간에 자고 깨는 습관을 들이세요.'
+                },
+                protein: {
+                    title: '🥚 단백질 섭취 하기',
+                    content: '근육 성장을 위해서는 충분한 단백질 섭취가 필수입니다. 체중 1kg당 1.6-2.2g의 단백질 섭취를 권장합니다. 닭가슴살, 계란, 생선, 유제품, 콩류 등 다양한 단백질 식품을 섭취하세요. 운동 후 1-2시간 이내에 단백질을 섭취하면 근육 단백질 합성이 더욱 촉진됩니다.'
+                },
+                consistency: {
+                    title: '🔄 꾸준한 훈련',
+                    content: '근력과 근육 성장은 일관된 훈련을 통해 이루어집니다. 완벽한 프로그램보다 꾸준히 실행할 수 있는 프로그램이 훨씬 더 효과적입니다. 최소 8-12주 동안 같은 프로그램을 지속하면 눈에 띄는 변화를 느낄 수 있습니다. 부상이 없는 한 계획된 운동을 빠지지 마세요.'
+                },
+                tracking: {
+                    title: '📝 운동 기록하기',
+                    content: '매 운동마다 무게, 세트 수, 반복 횟수를 기록하세요. 이를 통해 진행 상황을 추적하고 더 나은 결정을 내릴 수 있습니다. 진행 상황은 장기적 동기 부여에 매우 중요합니다. 매월 체중과 체형 변화를 사진으로 기록하면 더욱 명확한 진행 상황을 볼 수 있습니다.'
+                }
+            };
+            
+            const tip = tipData[tipType];
+            const modal = document.createElement('div');
+            modal.className = 'modal active';
+            modal.id = 'tipModal';
+            modal.onclick = function(e) { if (e.target.id === 'tipModal') closeTipModal(); };
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-2xl font-bold text-yellow-400">${tip.title}</h2>
+                        <button onclick="closeTipModal()" class="text-3xl text-gray-400 hover:text-yellow-400">×</button>
+                    </div>
+                    <div class="text-gray-300 space-y-4 leading-relaxed">
+                        ${tip.content}
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+
+        function closeTipModal() {
+            const modal = document.getElementById('tipModal');
+            if (modal) modal.remove();
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            ['bench1rm', 'squat1rm', 'deadlift1rm', 'targetTotal'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.addEventListener('input', function() {
+                        const bench = parseFloat(document.getElementById('bench1rm').value) || 0;
+                        const squat = parseFloat(document.getElementById('squat1rm').value) || 0;
+                        const deadlift = parseFloat(document.getElementById('deadlift1rm').value) || 0;
+                        const target = parseFloat(document.getElementById('targetTotal').value) || 1;
+                        
+                        const current = bench + squat + deadlift;
+                        const progress = Math.min((current / target) * 100, 100);
+                        document.getElementById('progressBar').style.width = progress + '%';
+                        document.getElementById('progressText').innerText = `${Math.round(current)} / ${target} kg (${Math.round(progress)}%)`;
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
