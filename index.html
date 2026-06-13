@@ -5,7 +5,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SBD 기반 맞춤형 근력 & 운동 루틴 대시보드</title>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9798882454083315" crossorigin="anonymous"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -110,17 +109,6 @@
             box-shadow: 0 0 40px rgba(255, 215, 0, 0.08);
         }
 
-        .adsense-placeholder {
-            border: 1px dashed rgba(255, 215, 0, 0.2);
-            background: rgba(255, 215, 0, 0.02);
-            padding: 1.5rem;
-            text-align: center;
-            color: #9a9180;
-            font-size: 0.8rem;
-            letter-spacing: 0.05em;
-            border-radius: 0.25rem;
-        }
-
         .progress-bar-fill {
             background: linear-gradient(90deg, var(--gold-dim), var(--gold));
             height: 100%;
@@ -164,15 +152,46 @@
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #0a0a0a; }
         ::-webkit-scrollbar-thumb { background: var(--gold-dim); border-radius: 4px; }
+
+        .tip-card {
+            background: var(--bg-card);
+            border: 1px solid rgba(255,215,0,0.15);
+            transition: all 0.25s ease;
+            cursor: pointer;
+        }
+        .tip-card:hover {
+            border-color: var(--gold);
+            box-shadow: 0 0 18px rgba(255, 215, 0, 0.15);
+            transform: translateY(-2px);
+        }
+        .tip-icon {
+            filter: drop-shadow(0 0 6px rgba(255, 215, 0, 0.4));
+        }
     </style>
 </head>
 <body class="text-slate-100">
     <div class="min-h-screen">
-        <!-- TOP ADSENSE PLACEHOLDER -->
+        <!-- TOP TIPS STRIP -->
         <div class="bg-black border-b border-yellow-900/30 p-4">
             <div class="max-w-7xl mx-auto">
-                <div class="adsense-placeholder">
-                    [Google AdSense 배너 영역 - 반응형] 상단 배너
+                <p class="text-xs font-semibold tracking-widest text-stone-500 mb-3 uppercase">운동 관련 팁 — 클릭해서 자세히 보기</p>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    <div class="tip-card rounded-lg p-3 text-center" onclick="openTipModal('warmup')">
+                        <div class="text-2xl mb-1 tip-icon">🔥</div>
+                        <p class="text-sm font-semibold glow-text-soft">워밍업 가이드</p>
+                    </div>
+                    <div class="tip-card rounded-lg p-3 text-center" onclick="openTipModal('breathing')">
+                        <div class="text-2xl mb-1 tip-icon">💨</div>
+                        <p class="text-sm font-semibold glow-text-soft">호흡 & 코어 안정</p>
+                    </div>
+                    <div class="tip-card rounded-lg p-3 text-center" onclick="openTipModal('recovery')">
+                        <div class="text-2xl mb-1 tip-icon">🛌</div>
+                        <p class="text-sm font-semibold glow-text-soft">회복과 수면</p>
+                    </div>
+                    <div class="tip-card rounded-lg p-3 text-center" onclick="openTipModal('nutrition')">
+                        <div class="text-2xl mb-1 tip-icon">🍗</div>
+                        <p class="text-sm font-semibold glow-text-soft">영양 기본 원칙</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -367,11 +386,37 @@
                 </section>
             </div>
 
-            <!-- RIGHT SIDEBAR - ADSENSE -->
+            <!-- RIGHT SIDEBAR - TRAINING TIPS -->
             <div class="lg:col-span-1">
-                <div class="sticky top-24 space-y-6">
-                    <div class="adsense-placeholder" style="min-height: 600px;">
-                        [Google AdSense 배너 영역 - 반응형] 사이드바
+                <div class="sticky top-24 space-y-4">
+                    <div class="panel rounded-lg p-5">
+                        <h3 class="font-display text-lg font-bold glow-text mb-4">트레이닝 팁 모음</h3>
+                        <div class="space-y-3">
+                            <div class="tip-card rounded-lg p-3" onclick="openTipModal('progressive')">
+                                <p class="text-sm font-semibold glow-text-soft mb-1">📈 점진적 과부하</p>
+                                <p class="text-xs text-stone-500">근력을 키우는 가장 확실한 원칙</p>
+                            </div>
+                            <div class="tip-card rounded-lg p-3" onclick="openTipModal('form')">
+                                <p class="text-sm font-semibold glow-text-soft mb-1">🎯 자세가 무게보다 우선</p>
+                                <p class="text-xs text-stone-500">부상 없이 오래 운동하는 법</p>
+                            </div>
+                            <div class="tip-card rounded-lg p-3" onclick="openTipModal('plateau')">
+                                <p class="text-sm font-semibold glow-text-soft mb-1">🧱 정체기 극복하기</p>
+                                <p class="text-xs text-stone-500">기록이 멈췄을 때 점검할 것들</p>
+                            </div>
+                            <div class="tip-card rounded-lg p-3" onclick="openTipModal('mobility')">
+                                <p class="text-sm font-semibold glow-text-soft mb-1">🤸 가동성 & 스트레칭</p>
+                                <p class="text-xs text-stone-500">깊은 스쿼트, 안전한 어깨를 위해</p>
+                            </div>
+                            <div class="tip-card rounded-lg p-3" onclick="openTipModal('hydration')">
+                                <p class="text-sm font-semibold glow-text-soft mb-1">💧 수분 섭취</p>
+                                <p class="text-xs text-stone-500">퍼포먼스에 미치는 영향</p>
+                            </div>
+                            <div class="tip-card rounded-lg p-3" onclick="openTipModal('mindset')">
+                                <p class="text-sm font-semibold glow-text-soft mb-1">🧠 멘탈 & 동기부여</p>
+                                <p class="text-xs text-stone-500">꾸준함을 만드는 작은 습관</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -511,11 +556,35 @@
             </div>
         </section>
 
-        <!-- BOTTOM ADSENSE PLACEHOLDER -->
+        <!-- BOTTOM TIPS GRID -->
         <div class="bg-black border-t border-yellow-900/30 p-6 mt-12">
             <div class="max-w-7xl mx-auto">
-                <div class="adsense-placeholder">
-                    [Google AdSense 배너 영역 - 반응형] 하단 배너
+                <h3 class="font-display text-xl font-bold glow-text mb-4 text-center">더 알아보기: 운동 팁</h3>
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    <div class="tip-card rounded-lg p-4 text-center" onclick="openTipModal('deload')">
+                        <div class="text-2xl mb-1 tip-icon">🔄</div>
+                        <p class="text-sm font-semibold glow-text-soft">디로드 주기</p>
+                    </div>
+                    <div class="tip-card rounded-lg p-4 text-center" onclick="openTipModal('injury')">
+                        <div class="text-2xl mb-1 tip-icon">⚠️</div>
+                        <p class="text-sm font-semibold glow-text-soft">부상 예방</p>
+                    </div>
+                    <div class="tip-card rounded-lg p-4 text-center" onclick="openTipModal('beginner')">
+                        <div class="text-2xl mb-1 tip-icon">🆕</div>
+                        <p class="text-sm font-semibold glow-text-soft">초보자 체크리스트</p>
+                    </div>
+                    <div class="tip-card rounded-lg p-4 text-center" onclick="openTipModal('cardio')">
+                        <div class="text-2xl mb-1 tip-icon">🏃</div>
+                        <p class="text-sm font-semibold glow-text-soft">근력+유산소 병행</p>
+                    </div>
+                    <div class="tip-card rounded-lg p-4 text-center" onclick="openTipModal('supplements')">
+                        <div class="text-2xl mb-1 tip-icon">💊</div>
+                        <p class="text-sm font-semibold glow-text-soft">보충제 기본 상식</p>
+                    </div>
+                    <div class="tip-card rounded-lg p-4 text-center" onclick="openTipModal('tracking')">
+                        <div class="text-2xl mb-1 tip-icon">📒</div>
+                        <p class="text-sm font-semibold glow-text-soft">트레이닝 일지 작성법</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -617,6 +686,17 @@
         </div>
     </div>
 
+    <!-- Generic Tip Modal -->
+    <div id="tipModal" class="modal" onclick="closeModalOnBackdrop(event, 'tipModal')">
+        <div class="modal-content">
+            <div class="flex justify-between items-center mb-4">
+                <h2 id="tipModalTitle" class="font-display text-2xl font-bold glow-text"></h2>
+                <button onclick="closeModal('tipModal')" class="text-3xl text-stone-400 hover:text-yellow-400">&times;</button>
+            </div>
+            <div id="tipModalBody" class="text-stone-300 space-y-4"></div>
+        </div>
+    </div>
+
     <script>
         // Modal Functions
         function openModal(modalId) {
@@ -631,6 +711,208 @@
             if (event.target.id === modalId) {
                 closeModal(modalId);
             }
+        }
+
+        // Training Tips Content
+        const tipContent = {
+            warmup: {
+                title: '워밍업 가이드',
+                body: `
+                    <p>본 운동 전 워밍업은 부상 예방과 퍼포먼스 향상에 직접적인 영향을 미칩니다. 5~10분간 가벼운 유산소(로잉, 사이클, 빠르게 걷기)로 체온과 심박수를 끌어올린 뒤 시작하세요.</p>
+                    <h3 class="text-lg font-bold glow-text-soft">동적 스트레칭부터</h3>
+                    <p>팔 돌리기, 다리 흔들기, 캣카우, 월드 그레이티스트 스트레치 등으로 오늘 사용할 관절의 가동 범위를 미리 열어줍니다. 정적 스트레칭은 본운동 후에 하는 것이 좋습니다.</p>
+                    <h3 class="text-lg font-bold glow-text-soft">점진적 워밍업 세트</h3>
+                    <p>메인 운동의 작업 무게를 기준으로 약 50%, 70%, 85% 순서로 워밍업 세트를 진행하세요. 무게가 가벼울수록 반복 수를 늘리고, 무게가 무거워질수록 반복 수를 줄여 신경계를 점진적으로 준비시킵니다.</p>
+                `
+            },
+            breathing: {
+                title: '호흡 & 코어 안정',
+                body: `
+                    <p>무거운 무게를 다룰 때 호흡은 단순한 산소 공급이 아니라 척추를 보호하는 코어 안정화 도구입니다.</p>
+                    <h3 class="text-lg font-bold glow-text-soft">발살바 호흡법</h3>
+                    <p>스쿼트나 데드리프트처럼 척추에 부하가 걸리는 동작에서는 동작 시작 전 숨을 깊게 들이마셔 복압을 채우고, 가장 힘든 구간을 지날 때까지 숨을 참아 코어를 단단하게 유지합니다. 동작을 마친 뒤 천천히 내뱉으세요.</p>
+                    <h3 class="text-lg font-bold glow-text-soft">360도 복압</h3>
+                    <p>배를 앞으로만 내미는 것이 아니라 옆구리와 허리까지 사방으로 압력이 퍼지는 느낌을 가지세요. 이렇게 하면 허리가 둥글게 말리는 것을 방지하고 힘 전달이 효율적으로 이루어집니다.</p>
+                    <h3 class="text-lg font-bold glow-text-soft">고혈압 등 주의가 필요한 경우</h3>
+                    <p>심혈관 질환이 있다면 숨을 오래 참는 발살바 호흡은 혈압을 급격히 올릴 수 있으므로, 가벼운 무게로 짧게 호흡을 참는 방식으로 시작하고 의료 전문가와 상담하세요.</p>
+                `
+            },
+            recovery: {
+                title: '회복과 수면',
+                body: `
+                    <p>근육은 운동 중이 아니라 회복하는 동안 성장합니다. 트레이닝 강도만큼 회복 관리도 결과에 큰 영향을 줍니다.</p>
+                    <h3 class="text-lg font-bold glow-text-soft">수면이 가장 강력한 회복 도구</h3>
+                    <p>매일 7~9시간의 수면을 목표로 하세요. 깊은 수면 단계에서 성장호르몬과 테스토스테론 분비가 활발해지며, 이는 근육 회복과 근력 향상에 직접적으로 기여합니다.</p>
+                    <h3 class="text-lg font-bold glow-text-soft">세션 간 회복 시간</h3>
+                    <p>같은 부위를 다시 훈련하기 전 최소 48시간의 회복 시간을 두는 것이 일반적으로 권장됩니다. 근육통이 심하게 남아있다면 강도를 낮추거나 다른 부위를 훈련하세요.</p>
+                    <h3 class="text-lg font-bold glow-text-soft">능동적 회복</h3>
+                    <p>완전한 휴식보다는 가벼운 걷기, 스트레칭, 폼롤러, 가벼운 사이클 같은 저강도 활동이 혈류를 촉진해 회복을 돕습니다.</p>
+                `
+            },
+            nutrition: {
+                title: '영양 기본 원칙',
+                body: `
+                    <p>운동의 효과를 극대화하려면 식단이 훈련 목표와 일치해야 합니다.</p>
+                    <h3 class="text-lg font-bold glow-text-soft">단백질 섭취량</h3>
+                    <p>체중 1kg당 약 1.6~2.2g의 단백질을 하루 3~5끼에 나눠 섭취하면 근육 단백질 합성을 꾸준히 유지할 수 있습니다. 육류, 생선, 계란, 유제품, 콩류 등 다양한 출처를 활용하세요.</p>
+                    <h3 class="text-lg font-bold glow-text-soft">목표에 맞는 칼로리 설정</h3>
+                    <p>근육 성장이 목표라면 약간의 칼로리 흑자, 체중 유지 및 근력 향상이 목표라면 유지 칼로리, 체지방 감량이 목표라면 완만한 칼로리 적자를 유지하세요. 급격한 변화는 근손실이나 퍼포먼스 저하로 이어질 수 있습니다.</p>
+                    <h3 class="text-lg font-bold glow-text-soft">운동 전후 영양</h3>
+                    <p>운동 2~3시간 전에는 탄수화물과 단백질이 포함된 식사를 하고, 운동 후에는 30~60분 내에 단백질과 탄수화물을 함께 섭취하면 회복과 글리코겐 재충전에 도움이 됩니다.</p>
+                `
+            },
+            progressive: {
+                title: '점진적 과부하',
+                body: `
+                    <p>점진적 과부하란 시간이 지남에 따라 운동에 가해지는 자극(무게, 반복 수, 세트 수, 또는 동작의 난이도)을 점차 늘려가는 원칙으로, 근력과 근육 성장의 가장 근본적인 원동력입니다.</p>
+                    <h3 class="text-lg font-bold glow-text-soft">늘릴 수 있는 변수들</h3>
+                    <p>무게를 늘리는 것이 가장 직관적이지만, 반복 수를 늘리거나, 세트 수를 추가하거나, 휴식 시간을 줄이거나, 동작의 가동 범위를 늘리는 것도 모두 과부하에 해당합니다. 한 번에 한 가지 변수만 조정하는 것이 안전합니다.</p>
+                    <h3 class="text-lg font-bold glow-text-soft">작은 단위로 자주</h3>
+                    <p>매주 큰 점프를 시도하기보다 2~5kg, 또는 반복 수 1~2회 정도의 작은 단위로 점진적으로 늘려가세요. 작은 진전이 꾸준히 쌓이면 장기적으로 큰 차이를 만듭니다.</p>
+                    <h3 class="text-lg font-bold glow-text-soft">기록의 중요성</h3>
+                    <p>매 세션의 무게와 반복 수를 기록해야 다음 세션에서 무엇을 늘릴지 명확히 알 수 있습니다. 감에 의존하면 정체기에 빠지기 쉽습니다.</p>
+                `
+            },
+            form: {
+                title: '자세가 무게보다 우선',
+                body: `
+                    <p>무거운 무게를 드는 것은 인상적으로 보일 수 있지만, 자세가 무너진 상태에서의 고중량은 부상으로 직결되며 장기적인 발전을 가로막습니다.</p>
+                    <h3 class="text-lg font-bold glow-text-soft">가동 범위 우선</h3>
+                    <p>전체 가동 범위를 사용하지 못할 정도로 무거운 무게는 근육에 자극을 주는 효율이 오히려 떨어집니다. 무게를 줄이고 풀 레인지로 수행하는 것이 부분 범위의 고중량보다 대부분 더 효과적입니다.</p>
+                    <h3 class="text-lg font-bold glow-text-soft">속도 조절</h3>
+                    <p>특히 내리는 동작(이심성 단계)을 통제하면 근육에 더 오랜 시간 긴장을 줄 수 있고, 반동을 이용한 부상 위험도 줄어듭니다.</p>
+                    <h3 class="text-lg font-bold glow-text-soft">영상으로 자세 확인</h3>
+                    <p>옆모습과 정면에서 자신의 동작을 촬영해 비교해보세요. 거울로는 보이지 않는 무릎 정렬, 허리 아치, 바벨 경로 등의 문제를 발견할 수 있습니다.</p>
+                `
+            },
+            plateau: {
+                title: '정체기 극복하기',
+                body: `
+                    <p>기록이 몇 주째 멈춰 있다면 단순히 더 열심히 하는 것보다 아래 항목들을 먼저 점검해보세요.</p>
+                    <h3 class="text-lg font-bold glow-text-soft">회복 점검</h3>
+                    <p>수면 시간, 스트레스 수준, 영양 섭취가 충분한지 확인하세요. 훈련량은 충분하지만 회복이 부족하면 몸은 적응할 여유가 없습니다.</p>
+                    <h3 class="text-lg font-bold glow-text-soft">디로드 고려</h3>
+                    <p>4~8주의 강도 높은 훈련 뒤에는 1주간 볼륨과 강도를 낮추는 디로드 주를 가져보세요. 누적된 피로가 해소되면 다음 사이클에서 기록이 다시 오르는 경우가 많습니다.</p>
+                    <h3 class="text-lg font-bold glow-text-soft">변형 동작 시도</h3>
+                    <p>같은 동작만 반복하면 신경계 적응이 둔화될 수 있습니다. 일시적으로 템포를 바꾸거나, 일시정지(포즈) 변형, 또는 보조 동작의 비중을 늘려보는 것도 좋은 자극이 됩니다.</p>
+                `
+            },
+            mobility: {
+                title: '가동성 & 스트레칭',
+                body: `
+                    <p>좋은 가동성은 더 깊은 스쿼트, 더 안전한 오버헤드 프레스, 그리고 전반적인 부상 위험 감소로 이어집니다.</p>
+                    <h3 class="text-lg font-bold glow-text-soft">엉덩이와 발목</h3>
+                    <p>스쿼트와 데드리프트에서 자세가 무너지는 가장 흔한 원인은 엉덩이와 발목의 가동성 부족입니다. 90/90 스트레치, 발목 벽 터치 동작을 워밍업에 포함해보세요.</p>
+                    <h3 class="text-lg font-bold glow-text-soft">어깨와 흉추</h3>
+                    <p>오버헤드 프레스나 벤치프레스에서 어깨가 불편하다면 흉추 회전 스트레치와 밴드를 이용한 어깨 가동성 운동이 도움이 됩니다.</p>
+                    <h3 class="text-lg font-bold glow-text-soft">운동 후 정적 스트레칭</h3>
+                    <p>운동이 끝난 뒤 주요 근육군을 20~30초씩 정적으로 스트레칭하면 근육의 유연성을 유지하고 다음 세션의 가동 범위 확보에 도움이 됩니다.</p>
+                `
+            },
+            hydration: {
+                title: '수분 섭취',
+                body: `
+                    <p>가벼운 탈수만으로도 근력, 집중력, 지구력이 눈에 띄게 떨어질 수 있습니다.</p>
+                    <h3 class="text-lg font-bold glow-text-soft">하루 권장량</h3>
+                    <p>활동량에 따라 다르지만, 체중 1kg당 약 30~40ml의 물을 기본으로 하고 운동량이 많은 날은 더 늘리는 것이 일반적인 가이드라인입니다.</p>
+                    <h3 class="text-lg font-bold glow-text-soft">운동 전후 수분</h3>
+                    <p>운동 2시간 전에 충분히 수분을 섭취하고, 운동 중에도 목이 마르기 전에 조금씩 마시는 습관을 가지세요. 땀을 많이 흘리는 세션 후에는 전해질 보충도 고려해볼 수 있습니다.</p>
+                    <h3 class="text-lg font-bold glow-text-soft">신호 확인하기</h3>
+                    <p>소변 색이 진한 노란색이라면 수분 섭취가 부족하다는 신호일 수 있습니다. 연한 노란색을 유지하는 것을 목표로 하세요.</p>
+                `
+            },
+            mindset: {
+                title: '멘탈 & 동기부여',
+                body: `
+                    <p>장기적인 성과는 한두 번의 완벽한 세션이 아니라 꾸준함에서 나옵니다.</p>
+                    <h3 class="text-lg font-bold glow-text-soft">작은 목표 설정</h3>
+                    <p>이 대시보드의 '이번 달 목표' 항목처럼 한 달 단위의 구체적이고 달성 가능한 목표를 세우면 큰 목표가 덜 부담스럽게 느껴지고 성취감을 자주 경험할 수 있습니다.</p>
+                    <h3 class="text-lg font-bold glow-text-soft">컨디션이 낮은 날 대처법</h3>
+                    <p>계획한 무게가 너무 무겁게 느껴지는 날도 있습니다. 그런 날은 무게를 10~20% 낮춰서라도 세션을 완료하는 것이 아예 빠지는 것보다 장기적으로 훨씬 낫습니다.</p>
+                    <h3 class="text-lg font-bold glow-text-soft">과정에 집중하기</h3>
+                    <p>매일의 숫자보다 몇 주, 몇 달 단위의 흐름을 보세요. 체크리스트를 꾸준히 채워나가는 것 자체가 장기적인 성공의 가장 좋은 지표입니다.</p>
+                `
+            },
+            deload: {
+                title: '디로드 주기',
+                body: `
+                    <p>디로드란 일정 기간 동안 의도적으로 훈련 강도나 볼륨을 낮춰 몸과 신경계를 회복시키는 계획된 휴식 주입니다.</p>
+                    <h3 class="text-lg font-bold glow-text-soft">언제 필요한가</h3>
+                    <p>일반적으로 4~8주의 강도 높은 훈련 후, 또는 전반적인 피로감, 동기 저하, 평소보다 무거워진 컨디션이 느껴질 때 디로드를 고려합니다.</p>
+                    <h3 class="text-lg font-bold glow-text-soft">실천 방법</h3>
+                    <p>작업 무게를 평소의 50~70% 수준으로 낮추거나, 세트 수를 절반으로 줄이는 방식이 흔히 사용됩니다. 동작 자체는 계속 수행하여 기술과 패턴을 유지합니다.</p>
+                    <h3 class="text-lg font-bold glow-text-soft">디로드 후 효과</h3>
+                    <p>축적된 피로가 해소되면서 다음 훈련 사이클에서 이전보다 더 무거운 무게를 다룰 수 있게 되는 경우가 많습니다. 디로드는 후퇴가 아니라 다음 발전을 위한 준비 단계입니다.</p>
+                `
+            },
+            injury: {
+                title: '부상 예방',
+                body: `
+                    <p>부상은 대부분 한 번의 사고가 아니라 누적된 피로, 자세 문제, 급격한 무게 증가가 결합되어 발생합니다.</p>
+                    <h3 class="text-lg font-bold glow-text-soft">통증과 근육통 구별하기</h3>
+                    <p>운동 후 1~2일간 느껴지는 둔한 근육통은 정상적인 반응입니다. 반면 관절에서 느껴지는 날카로운 통증, 한쪽으로만 느껴지는 통증, 또는 동작 중 갑작스러운 통증은 즉시 멈춰야 할 신호입니다.</p>
+                    <h3 class="text-lg font-bold glow-text-soft">급격한 무게 증가 피하기</h3>
+                    <p>한 세션에서 무게를 크게 올리고 싶은 욕구가 들 때가 가장 위험한 순간입니다. 점진적 과부하 원칙을 지키며 작은 단위로 늘려가세요.</p>
+                    <h3 class="text-lg font-bold glow-text-soft">통증 발생 시 대처</h3>
+                    <p>통증이 느껴지면 즉시 운동을 중단하고, 며칠간 해당 동작을 피하거나 가동 범위를 줄여보세요. 통증이 지속되면 의료 전문가의 진단을 받는 것이 안전합니다.</p>
+                `
+            },
+            beginner: {
+                title: '초보자 체크리스트',
+                body: `
+                    <p>처음 시작할 때는 무게보다 아래 항목들에 집중하는 것이 장기적으로 훨씬 더 큰 도움이 됩니다.</p>
+                    <h3 class="text-lg font-bold glow-text-soft">동작 패턴 먼저</h3>
+                    <p>스쿼트, 힙힌지, 프레스, 풀의 기본 패턴을 가벼운 무게나 맨몸으로 먼저 익히세요. 4~6주 정도는 무게보다 자세에 집중하는 것이 좋습니다.</p>
+                    <h3 class="text-lg font-bold glow-text-soft">훈련 빈도 현실적으로</h3>
+                    <p>6일 분할이 부담스럽다면 주 3~4일 전신 또는 상하체 분할로 시작하세요. 꾸준히 지속할 수 있는 빈도가 가장 좋은 빈도입니다.</p>
+                    <h3 class="text-lg font-bold glow-text-soft">1RM 테스트는 천천히</h3>
+                    <p>기본 동작 패턴이 안정될 때까지(보통 4~6주) 진짜 1RM 테스트는 미루고, 대시보드에는 보수적으로 추정한 값을 입력해 시작하세요.</p>
+                `
+            },
+            cardio: {
+                title: '근력+유산소 병행',
+                body: `
+                    <p>근력 운동과 유산소 운동을 함께 한다고 해서 근육 성장이나 근력 향상이 무조건 방해받는 것은 아닙니다. 다만 배치 방식이 중요합니다.</p>
+                    <h3 class="text-lg font-bold glow-text-soft">같은 날이라면 순서</h3>
+                    <p>근력이 주 목표라면 근력 운동을 먼저 하고 유산소를 나중에 배치하세요. 반대로 하면 무거운 무게를 다룰 힘이 부족해질 수 있습니다.</p>
+                    <h3 class="text-lg font-bold glow-text-soft">강도와 시간 조절</h3>
+                    <p>고강도 인터벌(HIIT)을 근력 운동과 같은 날, 같은 부위에 과도하게 배치하면 회복 부담이 커집니다. 가벼운 유산소(걷기, 사이클)는 회복일에 배치하는 것이 효율적입니다.</p>
+                    <h3 class="text-lg font-bold glow-text-soft">목표에 따른 비율</h3>
+                    <p>체지방 감량이 목표라면 유산소 비중을 늘리고, 근력/근육 성장이 목표라면 유산소는 심혈관 건강 유지 수준(주 2~3회, 20~30분)으로 가볍게 유지하는 것이 일반적입니다.</p>
+                `
+            },
+            supplements: {
+                title: '보충제 기본 상식',
+                body: `
+                    <p>보충제는 이름 그대로 식단을 '보충'하는 역할이며, 기본적인 영양과 훈련이 갖춰지지 않으면 효과가 제한적입니다.</p>
+                    <h3 class="text-lg font-bold glow-text-soft">크레아틴</h3>
+                    <p>가장 많이 연구된 보충제 중 하나로, 고강도 운동에서의 근력과 파워 향상에 도움이 될 수 있습니다. 일반적으로 하루 3~5g을 꾸준히 섭취하는 방식이 권장됩니다.</p>
+                    <h3 class="text-lg font-bold glow-text-soft">단백질 보충제</h3>
+                    <p>유청 단백질 등은 식사로 단백질 목표를 채우기 어려울 때 편리한 보조 수단입니다. 식사를 대체하기보다는 보완하는 용도로 사용하세요.</p>
+                    <h3 class="text-lg font-bold glow-text-soft">복용 전 확인할 것</h3>
+                    <p>기존에 복용 중인 약물이 있거나 건강 상태에 우려가 있다면 보충제를 시작하기 전 의료 전문가와 상담하는 것이 안전합니다.</p>
+                `
+            },
+            tracking: {
+                title: '트레이닝 일지 작성법',
+                body: `
+                    <p>기록하지 않으면 발전을 객관적으로 확인하기 어렵습니다. 간단한 일지만으로도 큰 차이를 만들 수 있습니다.</p>
+                    <h3 class="text-lg font-bold glow-text-soft">기록해야 할 핵심 항목</h3>
+                    <p>각 운동의 무게, 세트, 반복 수, 그리고 체감 난이도(RPE)를 기록하세요. 이 네 가지만 있어도 다음 세션의 목표를 설정하는 데 충분합니다.</p>
+                    <h3 class="text-lg font-bold glow-text-soft">이 대시보드 활용법</h3>
+                    <p>매일 운동 체크리스트를 완료하고, 1RM이 갱신될 때마다 입력값을 업데이트하세요. SBD 진행률 바를 통해 장기적인 흐름을 한눈에 확인할 수 있습니다.</p>
+                    <h3 class="text-lg font-bold glow-text-soft">주기적인 리뷰</h3>
+                    <p>매주 또는 매달 일지를 돌아보며 어떤 동작에서 꾸준히 발전하고 있는지, 어떤 동작이 정체되어 있는지 파악하면 다음 사이클의 계획을 세우는 데 큰 도움이 됩니다.</p>
+                `
+            }
+        };
+
+        function openTipModal(key) {
+            const tip = tipContent[key];
+            if (!tip) return;
+            document.getElementById('tipModalTitle').innerText = tip.title;
+            document.getElementById('tipModalBody').innerHTML = tip.body;
+            openModal('tipModal');
         }
 
         // YouTube reference links
